@@ -90,44 +90,78 @@
 
 
 
-   function getLikeButton() {    
+  function getLikeButton() {
 
     const likesButton = document.querySelectorAll('.like-button');
 
     for (const like of likesButton) {
 
-      like.addEventListener("click", () => {
+      like.addEventListener("click", (event) => {
+
+        event.stopPropagation();
+
         const likeIndex = like.dataset.index;
-        const commentsElement = comments[likeIndex];
-                
-        if (commentsElement.likeComment) {
-          commentsElement.likesNumber -= 1;
-          commentsElement.likeComment = false;
-          commentsElement.propertyColorLike = 'like-button -no-active-like';           
+        const commentsElementLikeIndex = comments[likeIndex];
+
+        if (commentsElementLikeIndex.likeComment) {
+          commentsElementLikeIndex.likesNumber -= 1;
+          commentsElementLikeIndex.likeComment = false;
+          commentsElementLikeIndex.propertyColorLike = 'like-button -no-active-like';
         } else {
-          commentsElement.likesNumber += 1;
-          commentsElement.likeComment = true;
-          commentsElement.propertyColorLike = 'like-button -active-like';                  
+          commentsElementLikeIndex.likesNumber += 1;
+          commentsElementLikeIndex.likeComment = true;
+          commentsElementLikeIndex.propertyColorLike = 'like-button -active-like';
         }
-        renderComments();  
-       
+        renderComments();
+
       })
     }
   };
   getLikeButton();
 
-   const renderComments = () => {
-    
-    const commentsHtml = comments.map((comment, index) => {   
 
-    return `<li class="comment">
+  //Ответы на комментарии
+  function replyToComment() {
+
+    const commentElements = document.querySelectorAll('.comment');
+
+    for (const commentElement of commentElements) {
+      commentElement.addEventListener("click", () => {
+        
+        const indexComment = commentElement.dataset.index;
+
+        inputTextElement.value =
+        `QUOTE_BEGIN${comments[indexComment].name}:\n${comments[indexComment].textComment}QUOTE_END`;
+      }
+      )
+    }
+  };
+
+  replyToComment()
+
+  const renderComments = () => {
+
+    const commentsHtml = comments.map((comment, index) => {
+
+      return `<li class="comment" data-index="${index}">
           <div class="comment-header">
-            <div>${comment.name}</div>
+            <div>${comment.name
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")}
+            </div>
             <div>${comment.dateСreation}</div>
           </div>
           <div class="comment-body">
-            <div class="comment-text">
-              ${comment.textComment}
+            <div class="comment-text" >
+              ${comment.textComment
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("QUOTE_BEGIN", "<div class='comment-quote'><b>")
+          .replaceAll("QUOTE_END", "</b></div>")}
             </div>
           </div>
           <div class="comment-footer">
@@ -139,13 +173,13 @@
         </li>`;
     }).join("");
 
-    
+
     commentsElement.innerHTML = commentsHtml;
     getLikeButton();
+    replyToComment();
   };
 
   renderComments();
-
 
 
 
@@ -207,17 +241,11 @@
   });
 
 
-
-
-
-
-
-
-
-
   ///Доп.задание2 нажатие клавиши Enter должно вызывать ту же логику, которая срабатывает при клике на кнопку «Добавить».
-  document.addEventListener("keyup", function (enter) {
-    if (enter.keyCode == 13) {
+  document.addEventListener("keyup", function (event) {
+    if (event.shiftKey && (event.keyCode===13)) {
+      _chat._add();
+    } else if (event.keyCode===13) {
       buttonElement.click();
     }
   });
@@ -229,11 +257,9 @@
     comments.pop();
     renderComments();
 
-   // const lastElement = commentsElement.lastElementChild;
-   // lastElement.remove();
+    // const lastElement = commentsElement.lastElementChild;
+    // lastElement.remove();
   });
-
-   //console.log("It works!");
 </script>
 
 </html>
