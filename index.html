@@ -355,7 +355,7 @@ const commentsTextElements = document.querySelectorAll('.comment-text');
   ///Доп.задание2 нажатие клавиши Enter должно вызывать ту же логику, которая срабатывает при клике на кнопку «Добавить».
   document.addEventListener("keyup", function (event) {
     if (event.shiftKey && (event.keyCode === 13)) {
-      _chat._add();
+      //переносит на другую строку
     } else if (event.keyCode === 13) {
       buttonElement.click();
     }
