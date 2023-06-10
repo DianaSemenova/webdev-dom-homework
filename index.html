@@ -135,17 +135,20 @@ const commentsTextElements = document.querySelectorAll('.comment-text');
         editorButtonElement.textContent = 'Сохранить';
 
         inputTextElement.value = `${comments[editorButtonIndex].textComment}`; 
+        inputNameElement.value = `${comments[editorButtonIndex].name}`; 
 
-        comments[editorButtonIndex].textComment = inputTextElement.value;
+        //comments[editorButtonIndex].textComment = inputTextElement.value;
 
        
      //  getComment();
 
       } else {
         comments[editorButtonIndex].textComment = inputTextElement.value;
+        comments[editorButtonIndex].name = inputNameElement.value;
         comments[editorButtonIndex].dateСreation = `${currentDate} (изменено)`;
         renderComments();
         inputTextElement.value = '';
+        inputNameElement.value = '';
       }
      
         //commentElements.classList.remove('add-form');        
@@ -217,7 +220,7 @@ const commentsTextElements = document.querySelectorAll('.comment-text');
         // QUOTE_END = QUOTE_BEGIN.hidden;
 
         inputTextElement.value =
-          `${QUOTE_BEGIN}${comments[indexComment].name}:\n${comments[indexComment].textComment}${QUOTE_END}`;
+          `${QUOTE_BEGIN}${comments[indexComment].name}:\n${comments[indexComment].textComment}${QUOTE_END}\n\n`;
 
         // inputTextElement.value =
         // `QUOTE_BEGIN${comments[indexComment].name}:\n${comments[indexComment].textComment}QUOTE_END`;
