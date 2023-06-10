@@ -68,7 +68,6 @@
   const commentsElement = document.querySelector('.comments');
   const buttonElementDel = document.querySelector('.delete-form-button');
 
-
   const comments = [
     {
       name: 'Глеб Фокин',
@@ -89,13 +88,91 @@
   ];
 
 
+function getComment() {
+
+const commentsTextElements = document.querySelectorAll('.comment-text');
+  for (const commentTextElement of commentsTextElements) {
+
+  const commentIndex = commentTextElement.dataset.index;
+
+  commentTextElement.addEventListener('click', () => {
+
+ // event.stopPropagation();
+  alert(1);
+  
+   // commentTextElement.classList.remove('.comment-text');
+   // commentTextElement.classList.add('.comment-textArea');
+  })
+
+   commentTextElement.replace(' <div class="comment-text" >', '<textarea class="comment-textArea">')
+    .replace('</div>', '</textarea>');
+  commentTextElement.value = `${comments[commentIndex].textComment}`;
+  console.log(commentTextElement.value);
+
+
+}
+};
+//getComment();
+
+
+
+  function editorComment() {
+
+  //const commentsElement = document.querySelectorAll('.comment');
+  const editorButtonElements = document.querySelectorAll('.editor-button');
+
+  for (const editorButtonElement of editorButtonElements) {
+
+    editorButtonElement.addEventListener("click", (event) => {
+      event.stopPropagation();
+
+      const editorButtonIndex = editorButtonElement.dataset.index;
+      console.log(editorButtonIndex);
+
+
+      if (editorButtonElement.textContent === 'Редактировать') {
+
+        editorButtonElement.textContent = 'Сохранить';
+
+        inputTextElement.value = `${comments[editorButtonIndex].textComment}`; 
+
+        comments[editorButtonIndex].textComment = inputTextElement.value;
+
+       
+     //  getComment();
+
+      } else {
+        comments[editorButtonIndex].textComment = inputTextElement.value;
+        comments[editorButtonIndex].dateСreation = `${currentDate} (изменено)`;
+        renderComments();
+        inputTextElement.value = '';
+      }
+     
+        //commentElements.classList.remove('add-form');        
+        //commentElements.classList.add('add-form-color');         
+        //commentElement[indexComment].style.backgroundColor = 'white';
+        // inputNameElement.value = `${comments[editorButtonIndex].name}`;
+        //inputTextElement.value = `${comments[editorButtonIndex].textComment}`;     
+      // else  if (editorButtonElement.textContent === 'Сохранить') {
+      //   editorButtonElement.textContent = 'Редактировать';   
+
+      //   comments[editorButtonIndex].name = inputNameElement.value;
+      //   comments[editorButtonIndex].textComment =  inputTextElement.value;
+      //   renderComments();
+
+    }     
+    )
+  }
+  };
+
+  editorComment();
+
+
+
 
   function getLikeButton() {
-
     const likesButton = document.querySelectorAll('.like-button');
-
     for (const like of likesButton) {
-
       like.addEventListener("click", (event) => {
 
         event.stopPropagation();
@@ -120,18 +197,37 @@
   getLikeButton();
 
 
+  let inputTextElementValue = '';
+
   //Ответы на комментарии
   function replyToComment() {
 
-    const commentElements = document.querySelectorAll('.comment');
+    let commentElements = document.querySelectorAll('.comment');
 
     for (const commentElement of commentElements) {
       commentElement.addEventListener("click", () => {
-        
+
         const indexComment = commentElement.dataset.index;
+        let QUOTE_BEGIN = 'QUOTE_BEGIN';
+        // QUOTE_BEGIN.hidden = true;
+        //QUOTE_BEGIN = QUOTE_BEGIN.hidden;
+
+        let QUOTE_END = 'QUOTE_END';
+        //QUOTE_END.hidden = true;
+        // QUOTE_END = QUOTE_BEGIN.hidden;
 
         inputTextElement.value =
-        `QUOTE_BEGIN${comments[indexComment].name}:\n${comments[indexComment].textComment}QUOTE_END`;
+          `${QUOTE_BEGIN}${comments[indexComment].name}:\n${comments[indexComment].textComment}${QUOTE_END}`;
+
+        // inputTextElement.value =
+        // `QUOTE_BEGIN${comments[indexComment].name}:\n${comments[indexComment].textComment}QUOTE_END`;
+
+        //inputTextElementValue =  `QUOTE_BEGIN${inputTextElement.value}QUOTE_END`;
+
+        // inputNameElement = inputNameElement.replaceAll("QUOTE_BEGIN", "<div class='comment-quote'><b>")
+        //   .replaceAll("QUOTE_END", "</b></div>")        
+
+        //console.log(inputTextElementValue);
       }
       )
     }
@@ -141,10 +237,12 @@
 
   const renderComments = () => {
 
+    console.log(inputTextElement.value);
+
     const commentsHtml = comments.map((comment, index) => {
 
       return `<li class="comment" data-index="${index}">
-          <div class="comment-header">
+          <div class="comment-header" data-index="${index}">
             <div>${comment.name
           .replaceAll("&", "&amp;")
           .replaceAll("<", "&lt;")
@@ -154,17 +252,21 @@
             <div>${comment.dateСreation}</div>
           </div>
           <div class="comment-body">
-            <div class="comment-text" >
+            <div data-index="${index} class="comment-text" >
               ${comment.textComment
           .replaceAll("&", "&amp;")
           .replaceAll("<", "&lt;")
           .replaceAll(">", "&gt;")
           .replaceAll('"', "&quot;")
-          .replaceAll("QUOTE_BEGIN", "<div class='comment-quote'><b>")
-          .replaceAll("QUOTE_END", "</b></div>")}
+          .replaceAll('QUOTE_BEGIN', "<div class='comment-quote'><b>")
+          .replaceAll('QUOTE_END', "</b></div>")
+        }
             </div>
           </div>
           <div class="comment-footer">
+            <div class="editor">
+            <button data-index="${index}" class='editor-button'>Редактировать</button>
+            </div>
             <div class="likes">
               <span class="likes-counter"> ${comment.likesNumber}</span>
               <button data-index="${index}" class='${comment.propertyColorLike}'></button>
@@ -177,6 +279,8 @@
     commentsElement.innerHTML = commentsHtml;
     getLikeButton();
     replyToComment();
+    editorComment();
+   // getComment();
   };
 
   renderComments();
@@ -219,6 +323,10 @@
 
   buttonElement.addEventListener("click", () => {
 
+    console.log(inputTextElement.value);
+    //inputTextElement.value = inputTextElementValue; 
+    //console.log(inputTextElement.value);
+
     buttonElement.setAttribute('disabled', true);
 
 
@@ -243,9 +351,9 @@
 
   ///Доп.задание2 нажатие клавиши Enter должно вызывать ту же логику, которая срабатывает при клике на кнопку «Добавить».
   document.addEventListener("keyup", function (event) {
-    if (event.shiftKey && (event.keyCode===13)) {
+    if (event.shiftKey && (event.keyCode === 13)) {
       _chat._add();
-    } else if (event.keyCode===13) {
+    } else if (event.keyCode === 13) {
       buttonElement.click();
     }
   });
