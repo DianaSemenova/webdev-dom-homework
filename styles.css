@@ -77,9 +77,8 @@ body {
   }
 
   .comment-textArea {
-    font-size: 32px;
-    white-space: pre-line;
-    color:black;
+    margin-top: 32px;
+    margin-bottom: 32px;
     background-color: #ffffff;
     /* word-break: break-all; */
   }

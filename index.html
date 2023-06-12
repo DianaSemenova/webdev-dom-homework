@@ -10,42 +10,7 @@
 <body>
   <div class="container">
     <ul class="comments">
-
       <!-- Список рендерится из JS -->
-      <!-- <li class="comment">
-        <div class="comment-header">
-          <div>Глеб Фокин</div>
-          <div>12.02.22 12:18</div>
-        </div>
-        <div class="comment-body">
-          <div class="comment-text">
-            Это будет первый комментарий на этой странице
-          </div>
-        </div>
-        <div class="comment-footer">
-          <div class="likes">
-            <span class="likes-counter">3</span>
-            <button class="like-button"></button>
-          </div>
-        </div>
-      </li>
-      <li class="comment">
-        <div class="comment-header">
-          <div>Варвара Н.</div>
-          <div>13.02.22 19:22</div>
-        </div>
-        <div class="comment-body">
-          <div class="comment-text">
-            Мне нравится как оформлена эта страница! ❤
-          </div>
-        </div>
-        <div class="comment-footer">
-          <div class="likes">
-            <span class="likes-counter">75</span>
-            <button class="like-button -active-like"></button>
-          </div>
-        </div>
-      </li> -->
     </ul>
     <div class="add-form">
       <input type="text" class="add-form-name" placeholder="Введите ваше имя" />
@@ -88,91 +53,89 @@
   ];
 
 
-function getComment() {
-
-const commentsTextElements = document.querySelectorAll('.comment-text');
-  for (const commentTextElement of commentsTextElements) {
-
-  const commentIndex = commentTextElement.dataset.index;
-
-  commentTextElement.addEventListener('click', () => {
-
- // event.stopPropagation();
-  alert(1);
   
-   // commentTextElement.classList.remove('.comment-text');
-   // commentTextElement.classList.add('.comment-textArea');
-  })
-
-   commentTextElement.replace(' <div class="comment-text" >', '<textarea class="comment-textArea">')
-    .replace('</div>', '</textarea>');
-  commentTextElement.value = `${comments[commentIndex].textComment}`;
-  console.log(commentTextElement.value);
-
-
-}
-};
-//getComment();
-
-
-
+  //редактирование текста уже написанного комментария 
   function editorComment() {
+    const editorButtonElements = document.querySelectorAll('.editor-button');
+    const commentsBodyElements = document.querySelectorAll('.comment-body');//+
+    const commentsTextElements = document.querySelectorAll('.comment-text');//+
 
-  //const commentsElement = document.querySelectorAll('.comment');
-  const editorButtonElements = document.querySelectorAll('.editor-button');
+    for (const editorButtonElement of editorButtonElements) {
 
-  for (const editorButtonElement of editorButtonElements) {
+      editorButtonElement.addEventListener("click", (event) => {
+        event.stopPropagation();
 
-    editorButtonElement.addEventListener("click", (event) => {
-      event.stopPropagation();
+        const editorButtonIndex = editorButtonElement.dataset.index;
+        console.log(editorButtonIndex);       
 
-      const editorButtonIndex = editorButtonElement.dataset.index;
-      console.log(editorButtonIndex);
+          if (editorButtonElement.textContent === 'Редактировать') {
 
+            editorButtonElement.textContent = 'Сохранить';
 
-      if (editorButtonElement.textContent === 'Редактировать') {
+            commentsTextElements[editorButtonIndex].innerHTML = `<textarea class="comment-text">${comments[editorButtonIndex].textComment}</textarea>`;
+            commentsTextElements.value = `${comments[editorButtonIndex].textComment}`; 
+            console.log(commentsTextElements.value);
 
-        editorButtonElement.textContent = 'Сохранить';
+          } else {
 
-        inputTextElement.value = `${comments[editorButtonIndex].textComment}`; 
-        inputNameElement.value = `${comments[editorButtonIndex].name}`; 
+            comments[editorButtonIndex].textComment = commentsTextElements.value;
+            comments[editorButtonIndex].dateСreation = `${currentDate} (изменено)`;
+            console.log(comments[editorButtonIndex].textComment);
 
-        //comments[editorButtonIndex].textComment = inputTextElement.value;
-
-       
-     //  getComment();
-
-      } else {
-        comments[editorButtonIndex].textComment = inputTextElement.value;
-        comments[editorButtonIndex].name = inputNameElement.value;
-        comments[editorButtonIndex].dateСreation = `${currentDate} (изменено)`;
-        renderComments();
-        inputTextElement.value = '';
-        inputNameElement.value = '';
+            renderComments();
+          }
       }
-     
-        //commentElements.classList.remove('add-form');        
-        //commentElements.classList.add('add-form-color');         
-        //commentElement[indexComment].style.backgroundColor = 'white';
-        // inputNameElement.value = `${comments[editorButtonIndex].name}`;
-        //inputTextElement.value = `${comments[editorButtonIndex].textComment}`;     
-      // else  if (editorButtonElement.textContent === 'Сохранить') {
-      //   editorButtonElement.textContent = 'Редактировать';   
 
-      //   comments[editorButtonIndex].name = inputNameElement.value;
-      //   comments[editorButtonIndex].textComment =  inputTextElement.value;
-      //   renderComments();
 
-    }     
-    )
+      )
+    }
   }
-  };
+
 
   editorComment();
 
 
 
+//первый вариант:комментарий и имя при клике на кнопку «Редактировать» подставляются  в уже существующую форму добавления комментария и имени
+// function editorComment() {
+// const editorButtonElements = document.querySelectorAll('.editor-button');
 
+// for (const editorButtonElement of editorButtonElements) {
+
+//   editorButtonElement.addEventListener("click", (event) => {
+//     event.stopPropagation();
+
+//     const editorButtonIndex = editorButtonElement.dataset.index;
+//     console.log(editorButtonIndex);
+
+
+//     if (editorButtonElement.textContent === 'Редактировать') {
+
+//       editorButtonElement.textContent = 'Сохранить';
+
+//       inputTextElement.value = `${comments[editorButtonIndex].textComment}`; 
+//       inputNameElement.value = `${comments[editorButtonIndex].name}`; 
+
+
+//     } else {
+//       comments[editorButtonIndex].textComment = inputTextElement.value;
+//       comments[editorButtonIndex].name = inputNameElement.value;
+//       comments[editorButtonIndex].dateСreation = `${currentDate} (изменено)`;
+//       renderComments();
+//       inputTextElement.value = '';
+//       inputNameElement.value = '';
+//     }
+
+//   }     
+//   )
+// }
+// };
+
+
+
+
+
+//счетчик лайков у каждого комментария
   function getLikeButton() {
     const likesButton = document.querySelectorAll('.like-button');
     for (const like of likesButton) {
@@ -240,8 +203,6 @@ const commentsTextElements = document.querySelectorAll('.comment-text');
 
   const renderComments = () => {
 
-    console.log(inputTextElement.value);
-
     const commentsHtml = comments.map((comment, index) => {
 
       return `<li class="comment" data-index="${index}">
@@ -255,7 +216,7 @@ const commentsTextElements = document.querySelectorAll('.comment-text');
             <div>${comment.dateСreation}</div>
           </div>
           <div class="comment-body">
-            <div data-index="${index} class="comment-text" >
+            <div data-index="${index}" class="comment-text" >
               ${comment.textComment
           .replaceAll("&", "&amp;")
           .replaceAll("<", "&lt;")
@@ -283,7 +244,6 @@ const commentsTextElements = document.querySelectorAll('.comment-text');
     getLikeButton();
     replyToComment();
     editorComment();
-   // getComment();
   };
 
   renderComments();
@@ -326,10 +286,6 @@ const commentsTextElements = document.querySelectorAll('.comment-text');
 
   buttonElement.addEventListener("click", () => {
 
-    console.log(inputTextElement.value);
-    //inputTextElement.value = inputTextElementValue; 
-    //console.log(inputTextElement.value);
-
     buttonElement.setAttribute('disabled', true);
 
 
@@ -364,7 +320,6 @@ const commentsTextElements = document.querySelectorAll('.comment-text');
   //удаление последнего комментари
   buttonElementDel.addEventListener("click", () => {
 
-    //const lastElement = commentsElement.lastIndexOf(commentElement)
     comments.pop();
     renderComments();
 
