@@ -32,33 +32,73 @@
   const buttonElement = document.querySelector('.add-form-button');
   const commentsElement = document.querySelector('.comments');
   const buttonElementDel = document.querySelector('.delete-form-button');
-
-  const comments = [
-    {
-      name: 'Глеб Фокин',
-      dateСreation: '12.02.22 12:18',
-      textComment: 'Это будет первый комментарий на этой страницe',
-      likeComment: false,
-      likesNumber: 3,
-      propertyColorLike: 'like-button -no-active-like',
-    },
-    {
-      name: 'Варвара Н.',
-      dateСreation: '13.02.22 19:22',
-      textComment: 'Мне нравится как оформлена эта страница! ❤',
-      likeComment: false,
-      likesNumber: 75,
-      propertyColorLike: 'like-button no-active-like',
-    },
-  ];
+  const currentDate = new Date().toLocaleDateString('default', {day: '2-digit', month: '2-digit', year: '2-digit'}) +
+   " "+ new Date().toLocaleTimeString().slice(0,-3);
 
 
+  const getCurrentDate = (date) => {
+    return date.getDate().toString().padStart(2, '0') + '.' +
+      (date.getMonth() + 1).toString().padStart(2, '0') + '.' +
+      date.getFullYear().toString().slice(-2) + " " +
+      date.toLocaleTimeString().slice(0, -3);
+
+  }
+
+  
+
+  // const comments = [
+  //   {
+  //     name: 'Глеб Фокин',
+  //     dateСreation: '12.02.22 12:18',
+  //     textComment: 'Это будет первый комментарий на этой страницe',
+  //     likeComment: false,
+  //     likesNumber: 3,
+  //     propertyColorLike: 'like-button -no-active-like',
+  //   },
+  //   {
+  //     name: 'Варвара Н.',
+  //     dateСreation: '13.02.22 19:22',
+  //     textComment: 'Мне нравится как оформлена эта страница! ❤',
+  //     likeComment: false,
+  //     likesNumber: 75,
+  //     propertyColorLike: 'like-button no-active-like',
+  //   },
+  // ];
+
+  let comments = [];
+
+  function fetchPromiceArr() {
+    const fetchPromise = fetch("https://wedev-api.sky.pro/api/v1/diaa-semenova/comments", {
+      method: "GET",
+    });
+    fetchPromise.then((response) => {
+
+      response.json().then((responseData) => {
+        const appComments = responseData.comments.map((comment) => {
+          return {
+            name: comment.author.name,
+            dateСreation: getCurrentDate(new Date(comment.date)),
+            text: comment.text,
+            likeComment: comment.isLiked,
+            likesNumber: comment.likes,
+            propertyColorLike: 'like-button no-active-like',
+          }
+        });
+        comments = appComments;
+        renderComments();
+      });
+
+    });
+  };
+
+  fetchPromiceArr();
 
   //редактирование текста уже написанного комментария 
   function editorComment() {
     const editorButtonElements = document.querySelectorAll('.editor-button');
-    const commentsBodyElements = document.querySelectorAll('.comment-body');//+
-    const commentsTextElements = document.querySelectorAll('.comment-text');//+
+    const commentsBodyElements = document.querySelectorAll('.comment-body');//+ 
+
+
 
     for (const editorButtonElement of editorButtonElements) {
 
@@ -72,11 +112,11 @@
 
           editorButtonElement.textContent = 'Сохранить';
 
-          commentsBodyElements[editorButtonIndex].innerHTML = `<textarea class="comment-text">${comments[editorButtonIndex].textComment}</textarea>`;
-          
-        } else {
+          commentsBodyElements[editorButtonIndex].innerHTML = `<textarea class="comment-text">${comments[editorButtonIndex].text}</textarea>`;
 
-          comments[editorButtonIndex].textComment = editorButtonElement.closest('.comment').querySelector('textarea').value;
+        } else {
+          
+          comments[editorButtonIndex].text = editorButtonElement.closest('.comment').querySelector('textarea').value;
           comments[editorButtonIndex].dateСreation = `${currentDate} (изменено)`;
           renderComments();
         }
@@ -89,47 +129,6 @@
 
 
   editorComment();
-
-
-
-  //первый вариант:комментарий и имя при клике на кнопку «Редактировать» подставляются  в уже существующую форму добавления комментария и имени
-  // function editorComment() {
-  // const editorButtonElements = document.querySelectorAll('.editor-button');
-
-  // for (const editorButtonElement of editorButtonElements) {
-
-  //   editorButtonElement.addEventListener("click", (event) => {
-  //     event.stopPropagation();
-
-  //     const editorButtonIndex = editorButtonElement.dataset.index;
-  //     console.log(editorButtonIndex);
-
-
-  //     if (editorButtonElement.textContent === 'Редактировать') {
-
-  //       editorButtonElement.textContent = 'Сохранить';
-
-  //       inputTextElement.value = `${comments[editorButtonIndex].textComment}`; 
-  //       inputNameElement.value = `${comments[editorButtonIndex].name}`; 
-
-
-  //     } else {
-  //       comments[editorButtonIndex].textComment = inputTextElement.value;
-  //       comments[editorButtonIndex].name = inputNameElement.value;
-  //       comments[editorButtonIndex].dateСreation = `${currentDate} (изменено)`;
-  //       renderComments();
-  //       inputTextElement.value = '';
-  //       inputNameElement.value = '';
-  //     }
-
-  //   }     
-  //   )
-  // }
-  // };
-
-
-
-
 
   //счетчик лайков у каждого комментария
   function getLikeButton() {
@@ -171,25 +170,9 @@
 
         const indexComment = commentElement.dataset.index;
         let QUOTE_BEGIN = 'QUOTE_BEGIN';
-        // QUOTE_BEGIN.hidden = true;
-        //QUOTE_BEGIN = QUOTE_BEGIN.hidden;
-
         let QUOTE_END = 'QUOTE_END';
-        //QUOTE_END.hidden = true;
-        // QUOTE_END = QUOTE_BEGIN.hidden;
-
         inputTextElement.value =
-          `${QUOTE_BEGIN}${comments[indexComment].name}:\n${comments[indexComment].textComment}${QUOTE_END}\n\n`;
-
-        // inputTextElement.value =
-        // `QUOTE_BEGIN${comments[indexComment].name}:\n${comments[indexComment].textComment}QUOTE_END`;
-
-        //inputTextElementValue =  `QUOTE_BEGIN${inputTextElement.value}QUOTE_END`;
-
-        // inputNameElement = inputNameElement.replaceAll("QUOTE_BEGIN", "<div class='comment-quote'><b>")
-        //   .replaceAll("QUOTE_END", "</b></div>")        
-
-        //console.log(inputTextElementValue);
+          `${QUOTE_BEGIN}${comments[indexComment].name}:\n${comments[indexComment].text}${QUOTE_END}\n\n`;
       }
       )
     }
@@ -213,7 +196,7 @@
           </div>
           <div class="comment-body">
             <div data-index="${index}" class="comment-text" >
-              ${comment.textComment
+              ${comment.text
           .replaceAll("&", "&amp;")
           .replaceAll("<", "&lt;")
           .replaceAll(">", "&gt;")
@@ -270,33 +253,53 @@
     }
   });
 
-
-  const currentDate = new Date().getDate().toString().padStart(2, '0') + '.' +
-    (new Date().getMonth() + 1).toString().padStart(2, '0') + '.' +
-    new Date().getFullYear().toString().slice(-2) + " " +
-    new Date().toLocaleTimeString().slice(0, -3);
-
-  // const currentDate = new Date().toLocaleDateString('default', {day: '2-digit', month: '2-digit', year: '2-digit'}) +
-  // " "+ new Date().toLocaleTimeString().slice(0,-3);
-
-
   buttonElement.addEventListener("click", () => {
 
     buttonElement.setAttribute('disabled', true);
 
 
-    comments.push({
-      name: inputNameElement.value,
-      dateСreation: currentDate,
-      textComment: inputTextElement.value,
-      likeComment: false,
-      likesNumber: 0,
-      propertyColorLike: 'like-button -no-active-like',
+    // comments.push({
+    //   name: inputNameElement.value,
+    //   dateСreation: currentDate,
+    //   text: inputTextElement.value,
+    //   likeComment: false,
+    //   likesNumber: 0,
+    //   propertyColorLike: 'like-button -no-active-like',
+    // });
+
+    //отпралем новые данные
+    const fetchPromise = fetch("https://wedev-api.sky.pro/api/v1/diaa-semenova/comments", {
+      method: "POST",
+      body: JSON.stringify({
+        name: inputNameElement.value
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;"),
+        date: getCurrentDate(new Date()),
+        text: inputTextElement.value
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll('QUOTE_BEGIN', "<div class='comment-quote'><b>")
+          .replaceAll('QUOTE_END', "</b></div>"),
+        isLiked: false,
+        likes: 0,
+        propertyColorLike: 'like-button no-active-like',
+      })
     });
-    renderComments();
+
+    fetchPromise.then((response) => {
+
+      response.json().then((responseData) => {
+        fetchPromiceArr();
+      });
+
+    });
 
 
-
+   // renderComments();
     inputNameElement.value = "";
     inputTextElement.value = "";
 
