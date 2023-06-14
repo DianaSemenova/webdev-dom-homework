@@ -53,7 +53,7 @@
   ];
 
 
-  
+
   //редактирование текста уже написанного комментария 
   function editorComment() {
     const editorButtonElements = document.querySelectorAll('.editor-button');
@@ -66,24 +66,20 @@
         event.stopPropagation();
 
         const editorButtonIndex = editorButtonElement.dataset.index;
-        console.log(editorButtonIndex);       
+        console.log(editorButtonIndex);
 
-          if (editorButtonElement.textContent === 'Редактировать') {
+        if (editorButtonElement.textContent === 'Редактировать') {
 
-            editorButtonElement.textContent = 'Сохранить';
+          editorButtonElement.textContent = 'Сохранить';
 
-            commentsTextElements[editorButtonIndex].innerHTML = `<textarea class="comment-text">${comments[editorButtonIndex].textComment}</textarea>`;
-            commentsTextElements.value = `${comments[editorButtonIndex].textComment}`; 
-            console.log(commentsTextElements.value);
+          commentsBodyElements[editorButtonIndex].innerHTML = `<textarea class="comment-text">${comments[editorButtonIndex].textComment}</textarea>`;
+          
+        } else {
 
-          } else {
-
-            comments[editorButtonIndex].textComment = commentsTextElements.value;
-            comments[editorButtonIndex].dateСreation = `${currentDate} (изменено)`;
-            console.log(comments[editorButtonIndex].textComment);
-
-            renderComments();
-          }
+          comments[editorButtonIndex].textComment = editorButtonElement.closest('.comment').querySelector('textarea').value;
+          comments[editorButtonIndex].dateСreation = `${currentDate} (изменено)`;
+          renderComments();
+        }
       }
 
 
@@ -96,46 +92,46 @@
 
 
 
-//первый вариант:комментарий и имя при клике на кнопку «Редактировать» подставляются  в уже существующую форму добавления комментария и имени
-// function editorComment() {
-// const editorButtonElements = document.querySelectorAll('.editor-button');
+  //первый вариант:комментарий и имя при клике на кнопку «Редактировать» подставляются  в уже существующую форму добавления комментария и имени
+  // function editorComment() {
+  // const editorButtonElements = document.querySelectorAll('.editor-button');
 
-// for (const editorButtonElement of editorButtonElements) {
+  // for (const editorButtonElement of editorButtonElements) {
 
-//   editorButtonElement.addEventListener("click", (event) => {
-//     event.stopPropagation();
+  //   editorButtonElement.addEventListener("click", (event) => {
+  //     event.stopPropagation();
 
-//     const editorButtonIndex = editorButtonElement.dataset.index;
-//     console.log(editorButtonIndex);
-
-
-//     if (editorButtonElement.textContent === 'Редактировать') {
-
-//       editorButtonElement.textContent = 'Сохранить';
-
-//       inputTextElement.value = `${comments[editorButtonIndex].textComment}`; 
-//       inputNameElement.value = `${comments[editorButtonIndex].name}`; 
+  //     const editorButtonIndex = editorButtonElement.dataset.index;
+  //     console.log(editorButtonIndex);
 
 
-//     } else {
-//       comments[editorButtonIndex].textComment = inputTextElement.value;
-//       comments[editorButtonIndex].name = inputNameElement.value;
-//       comments[editorButtonIndex].dateСreation = `${currentDate} (изменено)`;
-//       renderComments();
-//       inputTextElement.value = '';
-//       inputNameElement.value = '';
-//     }
+  //     if (editorButtonElement.textContent === 'Редактировать') {
 
-//   }     
-//   )
-// }
-// };
+  //       editorButtonElement.textContent = 'Сохранить';
+
+  //       inputTextElement.value = `${comments[editorButtonIndex].textComment}`; 
+  //       inputNameElement.value = `${comments[editorButtonIndex].name}`; 
 
 
+  //     } else {
+  //       comments[editorButtonIndex].textComment = inputTextElement.value;
+  //       comments[editorButtonIndex].name = inputNameElement.value;
+  //       comments[editorButtonIndex].dateСreation = `${currentDate} (изменено)`;
+  //       renderComments();
+  //       inputTextElement.value = '';
+  //       inputNameElement.value = '';
+  //     }
+
+  //   }     
+  //   )
+  // }
+  // };
 
 
 
-//счетчик лайков у каждого комментария
+
+
+  //счетчик лайков у каждого комментария
   function getLikeButton() {
     const likesButton = document.querySelectorAll('.like-button');
     for (const like of likesButton) {
