@@ -276,7 +276,7 @@ function delay(interval = 300) {
   buttonElement.addEventListener("click", () => {
 
     buttonElement.setAttribute('disabled', true);
-    formCommentElement.innerHTML = "Элемент добавлятся...";
+    formCommentElement.innerHTML = "Комментарий добавлятся...";
 
     console.log(formCommentElement.innerHTML);
 
@@ -308,7 +308,7 @@ function delay(interval = 300) {
         return response.json();
       })
       .then((response) => {
-        formCommentElement.innerHTML = "Список загружается...";
+        formCommentElement.innerHTML = "Комментарий загружается...";
         return response;
       })
       .then((responseData) => {
