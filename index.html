@@ -78,7 +78,6 @@
       .then((responseData) => {
         const appComments = responseData.comments.map((comment) => {
           return {
-            id: comment.id,
             name: comment.author.name,
             dateСreation: getCurrentDate(new Date(comment.date)),
             text: comment.text,
@@ -129,9 +128,17 @@
       )
     }
   }
-
-
   editorComment();
+
+ // Функция для имитации запросов в API
+// Не смотрите особо на внутренности, мы разберемся с этим позже
+function delay(interval = 300) {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve();
+        }, interval);
+      });
+};
 
   //счетчик лайков у каждого комментария
   function getLikeButton() {
@@ -139,10 +146,11 @@
     for (const like of likesButton) {
       like.addEventListener("click", (event) => {
 
-        event.stopPropagation();
+        event.stopPropagation();  
 
         const likeIndex = like.dataset.index;
-        const commentsElementLikeIndex = comments[likeIndex];
+        const commentsElementLikeIndex = comments[likeIndex];   
+        like.classList.add ('-loading-like');
 
         if (commentsElementLikeIndex.likeComment) {
           commentsElementLikeIndex.likesNumber -= 1;
@@ -153,7 +161,10 @@
           commentsElementLikeIndex.likeComment = true;
           commentsElementLikeIndex.propertyColorLike = 'like-button -active-like';
         }
-        renderComments();
+        
+        delay(2000).then(() => {
+        renderComments();     
+})
 
       })
     }
@@ -161,11 +172,12 @@
   getLikeButton();
 
 
+  
+
   let inputTextElementValue = '';
 
   //Ответы на комментарии
   function replyToComment() {
-
     let commentElements = document.querySelectorAll('.comment');
 
     for (const commentElement of commentElements) {
