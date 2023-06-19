@@ -9,6 +9,7 @@
 
 <body>
   <div class="container">
+    <div class="data-loading">Пожалуйста подождите, комментарии загружаются...</div>
     <ul class="comments">
       <!-- Список рендерится из JS -->
     </ul>
@@ -27,6 +28,7 @@
 <script>
   "use strict";
 
+  const commentsLoading = document.querySelector('.data-loading');
   const formCommentElement = document.querySelector('.add-form');
   const inputNameElement = document.querySelector('.add-form-name');
   const inputTextElement = document.querySelector('.add-form-text');
@@ -87,8 +89,11 @@
           }
         });
         comments = appComments;
-        renderComments();
-      });
+        return renderComments();
+      })
+      .then((response) => {
+        commentsLoading.style.display = 'none';    
+     });
 
     //});
   };
@@ -170,8 +175,6 @@ function delay(interval = 300) {
     }
   };
   getLikeButton();
-
-
   
 
   let inputTextElementValue = '';
@@ -276,7 +279,7 @@ function delay(interval = 300) {
   buttonElement.addEventListener("click", () => {
 
     buttonElement.setAttribute('disabled', true);
-    formCommentElement.innerHTML = "Элемент добавлятся...";
+    formCommentElement.innerHTML = "Комментарий добавляется...";
 
     console.log(formCommentElement.innerHTML);
 
@@ -308,7 +311,7 @@ function delay(interval = 300) {
         return response.json();
       })
       .then((response) => {
-        formCommentElement.innerHTML = "Список загружается...";
+        formCommentElement.innerHTML = "Комментарий загружается...";
         return response;
       })
       .then((responseData) => {
