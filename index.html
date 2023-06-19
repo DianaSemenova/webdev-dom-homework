@@ -9,6 +9,7 @@
 
 <body>
   <div class="container">
+    <div class="data-loading">Пожалуйста подождите, комментарии загружаются...</div>
     <ul class="comments">
       <!-- Список рендерится из JS -->
     </ul>
@@ -27,13 +28,15 @@
 <script>
   "use strict";
 
+  const commentsLoading = document.querySelector('.data-loading');
+  const formCommentElement = document.querySelector('.add-form');
   const inputNameElement = document.querySelector('.add-form-name');
   const inputTextElement = document.querySelector('.add-form-text');
   const buttonElement = document.querySelector('.add-form-button');
   const commentsElement = document.querySelector('.comments');
   const buttonElementDel = document.querySelector('.delete-form-button');
-  const currentDate = new Date().toLocaleDateString('default', {day: '2-digit', month: '2-digit', year: '2-digit'}) +
-   " "+ new Date().toLocaleTimeString().slice(0,-3);
+  const currentDate = new Date().toLocaleDateString('default', { day: '2-digit', month: '2-digit', year: '2-digit' }) +
+    " " + new Date().toLocaleTimeString().slice(0, -3);
 
 
   const getCurrentDate = (date) => {
@@ -44,7 +47,7 @@
 
   }
 
-  
+
 
   // const comments = [
   //   {
@@ -68,12 +71,13 @@
   let comments = [];
 
   function fetchPromiceArr() {
-    const fetchPromise = fetch("https://wedev-api.sky.pro/api/v1/diana-semenova/comments", {
+    return fetch("https://wedev-api.sky.pro/api/v1/diana-semenova/comments", {
       method: "GET",
-    });
-    fetchPromise.then((response) => {
-
-      response.json().then((responseData) => {
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((responseData) => {
         const appComments = responseData.comments.map((comment) => {
           return {
             name: comment.author.name,
@@ -85,10 +89,13 @@
           }
         });
         comments = appComments;
-        renderComments();
-      });
+        return renderComments();
+      })
+      .then((response) => {
+        commentsLoading.style.display = 'none';    
+     });
 
-    });
+    //});
   };
 
   fetchPromiceArr();
@@ -115,7 +122,7 @@
           commentsBodyElements[editorButtonIndex].innerHTML = `<textarea class="comment-text">${comments[editorButtonIndex].text}</textarea>`;
 
         } else {
-          
+
           comments[editorButtonIndex].text = editorButtonElement.closest('.comment').querySelector('textarea').value;
           comments[editorButtonIndex].dateСreation = `${currentDate} (изменено)`;
           renderComments();
@@ -126,9 +133,17 @@
       )
     }
   }
-
-
   editorComment();
+
+ // Функция для имитации запросов в API
+// Не смотрите особо на внутренности, мы разберемся с этим позже
+function delay(interval = 300) {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve();
+        }, interval);
+      });
+};
 
   //счетчик лайков у каждого комментария
   function getLikeButton() {
@@ -136,10 +151,11 @@
     for (const like of likesButton) {
       like.addEventListener("click", (event) => {
 
-        event.stopPropagation();
+        event.stopPropagation();  
 
         const likeIndex = like.dataset.index;
-        const commentsElementLikeIndex = comments[likeIndex];
+        const commentsElementLikeIndex = comments[likeIndex];   
+        like.classList.add ('-loading-like');
 
         if (commentsElementLikeIndex.likeComment) {
           commentsElementLikeIndex.likesNumber -= 1;
@@ -150,19 +166,21 @@
           commentsElementLikeIndex.likeComment = true;
           commentsElementLikeIndex.propertyColorLike = 'like-button -active-like';
         }
-        renderComments();
+        
+        delay(2000).then(() => {
+        renderComments();     
+})
 
       })
     }
   };
   getLikeButton();
-
+  
 
   let inputTextElementValue = '';
 
   //Ответы на комментарии
   function replyToComment() {
-
     let commentElements = document.querySelectorAll('.comment');
 
     for (const commentElement of commentElements) {
@@ -182,7 +200,7 @@
 
   const renderComments = () => {
 
-    const commentsHtml = comments.map((comment, index) => {
+    const commentsHtml = comments.map((comment,index) => {
 
       return `<li class="comment" data-index="${index}">
           <div class="comment-header" data-index="${index}">
@@ -209,6 +227,7 @@
           <div class="comment-footer">
             <div class="editor">
             <button data-index="${index}" class='editor-button'>Редактировать</button>
+            <button data-id="${comment.id}" class='delete-button'>Удалить</button>
             </div>
             <div class="likes">
               <span class="likes-counter"> ${comment.likesNumber}</span>
@@ -223,11 +242,15 @@
     getLikeButton();
     replyToComment();
     editorComment();
+  
   };
 
   renderComments();
 
 
+  
+
+  
 
 
   //доп.задание1  кнопка «Написать» не кликабельна, если имя или текст в форме незаполненные.
@@ -256,19 +279,14 @@
   buttonElement.addEventListener("click", () => {
 
     buttonElement.setAttribute('disabled', true);
+    formCommentElement.innerHTML = "Элемент добавлятся...";
+
+    console.log(formCommentElement.innerHTML);
 
 
-    // comments.push({
-    //   name: inputNameElement.value,
-    //   dateСreation: currentDate,
-    //   text: inputTextElement.value,
-    //   likeComment: false,
-    //   likesNumber: 0,
-    //   propertyColorLike: 'like-button -no-active-like',
-    // });
-
-    //отпралем новые данные
-    const fetchPromise = fetch("https://wedev-api.sky.pro/api/v1/diana-semenova/comments", {
+    //отпралем новые данные   
+    
+    fetch("https://wedev-api.sky.pro/api/v1/diana-semenova/comments", {
       method: "POST",
       body: JSON.stringify({
         name: inputNameElement.value
@@ -288,18 +306,30 @@
         likes: 0,
         propertyColorLike: 'like-button no-active-like',
       })
-    });
-
-    fetchPromise.then((response) => {
-
-      response.json().then((responseData) => {
-        fetchPromiceArr();
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((response) => {
+        formCommentElement.innerHTML = "Комментарий загружается...";
+        return response;
+      })
+      .then((responseData) => {
+        return fetchPromiceArr();
+      })
+      .then((data) => {
+        formCommentElement.innerHTML = `<input type="text" class="add-form-name" placeholder="Введите ваше имя" />
+      <textarea type="textarea" class="add-form-text" placeholder="Введите ваш коментарий" rows="4"></textarea>
+      <div class="add-form-row">
+        <button class="add-form-button">Написать</button>
+        <button class="delete-form-button">Удалить последний комментарий</button>
+      </div>`;
       });
 
-    });
 
 
-   // renderComments();
+
+    // renderComments();
     inputNameElement.value = "";
     inputTextElement.value = "";
 
