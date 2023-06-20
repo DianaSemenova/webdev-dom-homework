@@ -92,8 +92,8 @@
         return renderComments();
       })
       .then((response) => {
-        commentsLoading.style.display = 'none';    
-     });
+        commentsLoading.style.display = 'none';
+      });
 
     //});
   };
@@ -135,15 +135,15 @@
   }
   editorComment();
 
- // Функция для имитации запросов в API
-// Не смотрите особо на внутренности, мы разберемся с этим позже
-function delay(interval = 300) {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve();
-        }, interval);
-      });
-};
+  // Функция для имитации запросов в API
+  // Не смотрите особо на внутренности, мы разберемся с этим позже
+  function delay(interval = 300) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, interval);
+    });
+  };
 
   //счетчик лайков у каждого комментария
   function getLikeButton() {
@@ -151,11 +151,11 @@ function delay(interval = 300) {
     for (const like of likesButton) {
       like.addEventListener("click", (event) => {
 
-        event.stopPropagation();  
+        event.stopPropagation();
 
         const likeIndex = like.dataset.index;
-        const commentsElementLikeIndex = comments[likeIndex];   
-        like.classList.add ('-loading-like');
+        const commentsElementLikeIndex = comments[likeIndex];
+        like.classList.add('-loading-like');
 
         if (commentsElementLikeIndex.likeComment) {
           commentsElementLikeIndex.likesNumber -= 1;
@@ -166,16 +166,16 @@ function delay(interval = 300) {
           commentsElementLikeIndex.likeComment = true;
           commentsElementLikeIndex.propertyColorLike = 'like-button -active-like';
         }
-        
+
         delay(2000).then(() => {
-        renderComments();     
-})
+          renderComments();
+        })
 
       })
     }
   };
   getLikeButton();
-  
+
 
   let inputTextElementValue = '';
 
@@ -200,7 +200,7 @@ function delay(interval = 300) {
 
   const renderComments = () => {
 
-    const commentsHtml = comments.map((comment,index) => {
+    const commentsHtml = comments.map((comment, index) => {
 
       return `<li class="comment" data-index="${index}">
           <div class="comment-header" data-index="${index}">
@@ -242,15 +242,15 @@ function delay(interval = 300) {
     getLikeButton();
     replyToComment();
     editorComment();
-  
+
   };
 
   renderComments();
 
 
-  
 
-  
+
+
 
 
   //доп.задание1  кнопка «Написать» не кликабельна, если имя или текст в форме незаполненные.
@@ -276,17 +276,10 @@ function delay(interval = 300) {
     }
   });
 
-  buttonElement.addEventListener("click", () => {
+  //отпралем новые данные   
+  const postData = () => {
 
-    buttonElement.setAttribute('disabled', true);
-    formCommentElement.innerHTML = "Элемент добавлятся...";
-
-    console.log(formCommentElement.innerHTML);
-
-
-    //отпралем новые данные   
-    
-    fetch("https://wedev-api.sky.pro/api/v1/diana-semenova/comments", {
+    return fetch("https://wedev-api.sky.pro/api/v1/diana-semenova/comments", {
       method: "POST",
       body: JSON.stringify({
         name: inputNameElement.value
@@ -311,29 +304,79 @@ function delay(interval = 300) {
         return response.json();
       })
       .then((response) => {
-        formCommentElement.innerHTML = "Комментарий загружается...";
-        return response;
+        if (response.status === 500) {
+          throw new Error("Сервер сломался");
+        } else if (response.status === 400) {
+          throw new Error("Плохой запрос");
+        } else {
+          return fetchPromiceArr();
+        }
       })
-      .then((responseData) => {
-        return fetchPromiceArr();
-      })
+      //  .then((responseData) => { 
+      //      return fetchPromiceArr();
+      //  })
       .then((data) => {
         formCommentElement.innerHTML = `<input type="text" class="add-form-name" placeholder="Введите ваше имя" />
-      <textarea type="textarea" class="add-form-text" placeholder="Введите ваш коментарий" rows="4"></textarea>
-      <div class="add-form-row">
-        <button class="add-form-button">Написать</button>
-        <button class="delete-form-button">Удалить последний комментарий</button>
-      </div>`;
+  <textarea type="textarea" class="add-form-text" placeholder="Введите ваш коментарий" rows="4"></textarea>
+  <div class="add-form-row">
+    <button class="add-form-button">Написать</button>
+    <button class="delete-form-button">Удалить последний комментарий</button>
+  </div>`;
+
+  const buttonElement = document.querySelector('.add-form-button');
+
+        buttonElement.addEventListener("click", () => {
+
+          buttonElement.setAttribute('disabled', true);
+          formCommentElement.innerHTML = "Элемент добавлятся...";
+
+          //отпралем новые данные 
+          postData();
+          inputNameElement.value = "";
+          inputTextElement.value = "";
+        });
+    })
+      .catch((error) => {
+
+        alert('Кажется что-то пошло не так, попробуйте позже')
+
+        buttonElement.removeAttribute('disabled');
+        formCommentElement.innerHTML = `<input type="text" class="add-form-name" placeholder="Введите ваше имя" value = "${inputNameElement.value}"/>
+  <textarea type="textarea" class="add-form-text" placeholder="Введите ваш коментарий" rows="4">${inputTextElement.value}</textarea>
+  <div class="add-form-row">
+    <button class="add-form-button">Написать</button>
+    <button class="delete-form-button">Удалить последний комментарий</button>
+  </div>`;
+
+  const buttonElement = document.querySelector('.add-form-button');
+
+        buttonElement.addEventListener("click", () => {
+
+          buttonElement.setAttribute('disabled', true);
+          formCommentElement.innerHTML = "Элемент добавлятся...";
+
+          //отпралем новые данные 
+          postData();
+
+          inputNameElement.value = "";
+          inputTextElement.value = "";
+        });
+
+
+        console.log(error);
       });
+  };
 
+  buttonElement.addEventListener("click", () => {
 
+    buttonElement.setAttribute('disabled', true);
+    formCommentElement.innerHTML = "Элемент добавлятся...";
 
+    //отпралем новые данные 
+    postData();
 
-    // renderComments();
     inputNameElement.value = "";
     inputTextElement.value = "";
-
-
   });
 
 
