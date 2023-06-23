@@ -213,5 +213,11 @@ body {
     padding: 10px;       
   }
 
+  .comment-loading {
+    display: none;
+  }
+
+  
+
 
  
