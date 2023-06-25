@@ -4,6 +4,7 @@ import {getCurrentDate} from "./date.js";
 // // Т. к. renderStudents экспортировалась по умолчанию default,
 // // то имя функции мы не берем в фигурные скобки
 import renderComments from "./renderComments.js";
+import { fetchGet } from "./api.js";
 
   const commentsLoading = document.querySelector('.data-loading');
   const formCommentElement = document.querySelector('.add-form');
@@ -21,13 +22,8 @@ import renderComments from "./renderComments.js";
 
   let comments = [];
 
-  function fetchPromiceArr() {
-    return fetch("https://wedev-api.sky.pro/api/v1/diana-semenova/comments", {
-      method: "GET",
-    })
-      .then((response) => {
-        return response.json();
-      })
+  function getAPI() {
+    return fetchGet
       .then((responseData) => {
         const appComments = responseData.comments.map((comment) => {
           return {
@@ -40,19 +36,18 @@ import renderComments from "./renderComments.js";
           }
         });
         comments = appComments;
-        return renderComments(comments, getLikeButton,replyToComment,editorComment);
+        return renderComments(comments);
       })
       .then((response) => {
         commentsLoading.style.display = 'none';
       });
-
-    //});
+    
   };
 
-  fetchPromiceArr();
+  getAPI();
 
   //редактирование текста уже написанного комментария 
-  function editorComment() {
+  export function editorComment() {
     const editorButtonElements = document.querySelectorAll('.editor-button');
     const commentsBodyElements = document.querySelectorAll('.comment-body');//+ 
 
@@ -76,7 +71,7 @@ import renderComments from "./renderComments.js";
 
           comments[editorButtonIndex].text = editorButtonElement.closest('.comment').querySelector('textarea').value;
           comments[editorButtonIndex].dateСreation = `${currentDate} (изменено)`;
-          renderComments(comments, getLikeButton,replyToComment,editorComment);
+          renderComments(comments);
         }
       }
 
@@ -97,7 +92,7 @@ import renderComments from "./renderComments.js";
   };
 
   //счетчик лайков у каждого комментария
-  function getLikeButton() {
+  export function getLikeButton() {
     const likesButton = document.querySelectorAll('.like-button');
     for (const like of likesButton) {
       like.addEventListener("click", (event) => {
@@ -119,7 +114,7 @@ import renderComments from "./renderComments.js";
         }
 
         delay(2000).then(() => {
-            renderComments(comments, getLikeButton,replyToComment,editorComment);
+            renderComments(comments);
         })
 
       })
@@ -129,7 +124,7 @@ import renderComments from "./renderComments.js";
 
 
     //Ответы на комментарии
-  function replyToComment() {
+  export function replyToComment() {
     let commentElements = document.querySelectorAll('.comment');
 
     for (const commentElement of commentElements) {
@@ -243,7 +238,7 @@ import renderComments from "./renderComments.js";
         } else if (response.status === 400) {
           throw new Error("Плохой запрос");
         } else {
-          return fetchPromiceArr();
+          return getAPI();
         }
       })
       .then((data) => {
@@ -308,7 +303,7 @@ import renderComments from "./renderComments.js";
   buttonElementDel.addEventListener("click", () => {
 
     comments.pop();
-    renderComments(comments, getLikeButton,replyToComment,editorComment);
+    renderComments(comments);
 
     // const lastElement = commentsElement.lastElementChild;
     // lastElement.remove();

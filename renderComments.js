@@ -1,10 +1,11 @@
-import {commentsElement} from "./script.js";
+import { commentsElement } from "./script.js";
+import { getLikeButton, replyToComment, editorComment } from "./script.js";
 
-const renderComments = (comments,getLikeButton,replyToComment,editorComment) => {
-  
+const renderComments = (comments) => {
+
   const commentsHtml = comments.map((comment, index) => {
 
-        return `<li class="comment" data-index="${index}">
+    return `<li class="comment" data-index="${index}">
             <div class="comment-header" data-index="${index}">
               <div>${comment.name}
               </div>
@@ -26,8 +27,7 @@ const renderComments = (comments,getLikeButton,replyToComment,editorComment) => 
               </div>
             </div>
           </li>`;
-      }).join("");
-
+  }).join(""); //решила пока эту часть не делать отдельной функцией.Я пока не вижу смысла делать так. Через импорты экспорты понятнее
 
   commentsElement.innerHTML = commentsHtml;
   getLikeButton();
