@@ -1,6 +1,7 @@
 import { commentsElement } from "./script.js";
 import { getLikeButton, replyToComment, editorComment } from "./script.js";
 
+
 const renderComments = (comments) => {
 
   const commentsHtml = comments.map((comment, index) => {

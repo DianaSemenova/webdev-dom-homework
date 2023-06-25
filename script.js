@@ -4,12 +4,12 @@ import {getCurrentDate} from "./date.js";
 // // Т. к. renderStudents экспортировалась по умолчанию default,
 // // то имя функции мы не берем в фигурные скобки
 import renderComments from "./renderComments.js";
-import { fetchGet } from "./api.js";
+import { fetchGet, fetchPost } from "./api.js";
 
   const commentsLoading = document.querySelector('.data-loading');
   const formCommentElement = document.querySelector('.add-form');
-  const inputNameElement = document.querySelector('.add-form-name');
-  const inputTextElement = document.querySelector('.add-form-text');
+  export const inputNameElement = document.querySelector('.add-form-name');
+  export const inputTextElement = document.querySelector('.add-form-text');
   const buttonElement = document.querySelector('.add-form-button');
   export const commentsElement = document.querySelector('.comments');
   const buttonElementDel = document.querySelector('.delete-form-button');
@@ -22,8 +22,8 @@ import { fetchGet } from "./api.js";
 
   let comments = [];
 
-  function getAPI() {
-    return fetchGet
+  function getAPI(fetch) {
+    return fetch()
       .then((responseData) => {
         const appComments = responseData.comments.map((comment) => {
           return {
@@ -44,7 +44,7 @@ import { fetchGet } from "./api.js";
     
   };
 
-  getAPI();
+  getAPI(fetchGet);
 
   //редактирование текста уже написанного комментария 
   export function editorComment() {
@@ -208,39 +208,12 @@ import { fetchGet } from "./api.js";
   });
 
   //отпраляем новые данные   
-  const postData = () => {
+  const postData = (fetch) => {
 
-    return fetch("https://wedev-api.sky.pro/api/v1/diana-semenova/comments", {
-      method: "POST",
-      body: JSON.stringify({
-        name: inputNameElement.value
-          .replaceAll("&", "&amp;")
-          .replaceAll("<", "&lt;")
-          .replaceAll(">", "&gt;")
-          .replaceAll('"', "&quot;"),
-        date: getCurrentDate(new Date()),
-        text: inputTextElement.value
-          .replaceAll("&", "&amp;")
-          .replaceAll("<", "&lt;")
-          .replaceAll(">", "&gt;")
-          .replaceAll('"', "&quot;")
-          .replaceAll('QUOTE_BEGIN', "<div class='comment-quote'><b>")
-          .replaceAll('QUOTE_END', "</b></div>"),
-        isLiked: false,
-        likes: 0,
-        propertyColorLike: 'like-button no-active-like',
-       forceError: true,
-      })
+    return fetch()
+    .then((response) => {
+        return getAPI(fetchGet);
     })
-      .then((response) => {
-        if (response.status === 500) {
-          throw new Error("Сервер сломался");
-        } else if (response.status === 400) {
-          throw new Error("Плохой запрос");
-        } else {
-          return getAPI();
-        }
-      })
       .then((data) => {
         commentLoadingElement.classList.add ('comment-loading');      
         formCommentElement.classList.remove ('comment-loading');
@@ -255,7 +228,7 @@ import { fetchGet } from "./api.js";
     // Если сервер сломался, то просим попробовать позже
           if (error.message === "Сервер сломался") {
             alert("Сервер сломался, попробуйте позже");
-            postData();
+            postData(fetchPost);
           } else
           // Если пользователь накосячил с запросом, просим поправить
           if (error.message === "Плохой запрос") {
@@ -286,7 +259,7 @@ import { fetchGet } from "./api.js";
     buttonElement.setAttribute('disabled', true);
 
     //отпраляем новые данные 
-    postData();
+    postData(fetchPost);
   });
 
 
