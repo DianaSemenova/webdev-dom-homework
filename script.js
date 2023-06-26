@@ -5,6 +5,7 @@ import { getCurrentDate } from "./date.js";
 // // то имя функции мы не берем в фигурные скобки
 import renderComments from "./renderComments.js";
 import { fetchGet, fetchPost } from "./api.js";
+import {getListComments} from "./listComments.js"
 
 const commentsLoading = document.querySelector('.data-loading');
 const formCommentElement = document.querySelector('.add-form');
@@ -36,7 +37,7 @@ function getAPI(fetch) {
         }
       });
       comments = appComments;
-      return renderingData(renderComments);;
+      return  renderComments(comments, getListComments);
     })
     .then((response) => {
       commentsLoading.style.display = 'none';
@@ -71,7 +72,7 @@ export function editorComment() {
 
         comments[editorButtonIndex].text = editorButtonElement.closest('.comment').querySelector('textarea').value;
         comments[editorButtonIndex].dateСreation = `${currentDate} (изменено)`;
-        renderComments(comments);
+        renderComments(comments, getListComments)
       }
     }
 
@@ -114,7 +115,7 @@ export function getLikeButton() {
       }
 
       delay(2000).then(() => {
-        renderingData(renderComments);
+        renderComments(comments, getListComments)
       })
 
     })
@@ -180,11 +181,7 @@ replyToComment()
 
 // };
 
-const renderingData = (render) => {
-  render(comments);
-}
-renderingData(renderComments);
-
+renderComments(comments, getListComments)
 
 //доп.задание1  кнопка «Написать» не кликабельна, если имя или текст в форме незаполненные.
 buttonElement.setAttribute('disabled', true);
@@ -278,7 +275,7 @@ document.addEventListener("keyup", function (event) {
 buttonElementDel.addEventListener("click", () => {
 
   comments.pop();
-  renderingData(renderComments);
+  renderComments(comments, getListComments)
   // const lastElement = commentsElement.lastElementChild;
   // lastElement.remove();
 });
