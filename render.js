@@ -1,9 +1,9 @@
-
 import { fetchPost, fetchDelete } from "./api.js";
+import { getAPI } from "./script.js";
 
 
 
-const renderComments = (comments, listComments, token) => {
+const renderApp = (comments, listComments, token) => {
 
   const appEl = document.getElementById('app');
 
@@ -55,8 +55,8 @@ appEl.innerHTML = appHTML;
 
 const commentsLoading = document.querySelector('.data-loading');
 const formCommentElement = document.querySelector('.add-form');
-export const inputNameElement = document.querySelector('.add-form-name');
-export const inputTextElement = document.querySelector('.add-form-text');
+const inputNameElement = document.querySelector('.add-form-name');
+const inputTextElement = document.querySelector('.add-form-text');
 const buttonElement = document.querySelector('.add-form-button');
 const commentsElement = document.querySelector('.comments');
 const buttonElementDel = document.querySelector('.delete-form-button');
@@ -90,7 +90,7 @@ const currentDate = new Date().toLocaleDateString('default', { day: '2-digit', m
 
         comments[editorButtonIndex].text = editorButtonElement.closest('.comment').querySelector('textarea').value;
         comments[editorButtonIndex].dateСreation = `${currentDate} (изменено)`;
-        renderComments(comments, getListComments,token)
+        renderApp(comments, getListComments,token)
       }
     }
 
@@ -134,7 +134,7 @@ function delay(interval = 300) {
       }
 
       delay(2000).then(() => {
-        renderComments(comments, getListComments,token)
+        renderApp(comments, getListComments,token)
       })
 
     })
@@ -180,7 +180,7 @@ replyToComment();
             return getAPI();
           });
   
-         // renderComments(comments, getListComments, token)
+         // renderApp(comments, getListComments, token)
        });
      }
   };
@@ -215,7 +215,7 @@ inputTextElement.addEventListener("input", () => {
 //отпраляем новые данные   
 const postData = () => {
 
-  return fetchPost(token)
+  return fetchPost(token,inputTextElement,inputNameElement)
     .then((response) => {
       return getAPI();
     })
@@ -277,11 +277,11 @@ document.addEventListener("keyup", function (event) {
 buttonElementDel.addEventListener("click", () => {
 
   comments.pop();
-  renderComments(comments, getListComments,token)
+  renderApp(comments, getListComments,token)
   // const lastElement = commentsElement.lastElementChild;
   // lastElement.remove();
 });
 
 };
 
-export default renderComments;
+export default renderApp;

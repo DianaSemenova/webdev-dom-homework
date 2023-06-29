@@ -3,8 +3,8 @@
 import { getCurrentDate } from "./date.js";
 // // Т. к. renderStudents экспортировалась по умолчанию default,
 // // то имя функции мы не берем в фигурные скобки
-import renderComments from "./renderComments.js";
-import { fetchGet, fetchPost, fetchDelete } from "./api.js";
+import renderApp from "./render.js";
+import { fetchGet } from "./api.js";
 import {getListComments} from "./listComments.js"
 
 // const commentsLoading = document.querySelector('.data-loading');
@@ -26,7 +26,7 @@ let token = "Bearer asb4c4boc86gasb4c4boc86g37w3cc3bo3b83k4g37k3bk3cg3c03ck4k";
 //token = null;
 
 
-function getAPI() {
+export function getAPI() {
   return fetchGet(token)
     .then((responseData) => {
       const appComments = responseData.comments.map((comment) => {
@@ -41,7 +41,7 @@ function getAPI() {
         }
       });
       comments = appComments;
-      return  renderComments(comments, getListComments,token);
+      return  renderApp(comments, getListComments,token);
     })
     .then((response) => {
       commentsLoading.style.display = 'none';
@@ -157,7 +157,7 @@ getAPI();
 // };
 
 // replyToComment();
-renderComments(comments, getListComments,token);
+renderApp(comments, getListComments,token);
 
 // //доп.задание1  кнопка «Написать» не кликабельна, если имя или текст в форме незаполненные.
 // buttonElement.setAttribute('disabled', true);

@@ -1,5 +1,4 @@
 import { getCurrentDate } from "./date.js";
-import { inputTextElement, inputNameElement } from "./renderComments.js";
 
 const host = "https://wedev-api.sky.pro/api/v2/diana-semenova/comments/";
 
@@ -24,7 +23,7 @@ export const fetchGet = (token) => {
 
 
 //отпраляем новые данные   
-export const fetchPost = (token) => {
+export const fetchPost = (token,inputTextElement,inputNameElement) => {
   return fetch(host, {
     method: "POST",
     body: JSON.stringify({
