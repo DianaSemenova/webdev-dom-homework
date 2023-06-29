@@ -36,6 +36,12 @@ body {
     list-style: none;
   }
 
+
+  .form-add-login {
+    padding: 20px;
+  }
+
+  .form-add-login,
   .comment,
   .add-form {
     width: 596px;
@@ -172,6 +178,8 @@ body {
     align-items: flex-end;
   }
 
+  
+  .button,
   .editor-button,
   .delete-button,
   .delete-form-button, 

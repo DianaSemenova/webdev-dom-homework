@@ -1,22 +1,31 @@
 import { getCurrentDate } from "./date.js";
-import { inputTextElement, inputNameElement } from "./script.js";
+import { inputTextElement, inputNameElement } from "./renderComments.js";
 
-//const adresAPI = "https://wedev-api.sky.pro/api/v1/diana-semenova/comments";
+const host = "https://wedev-api.sky.pro/api/v2/diana-semenova/comments/";
 
-export const fetchGet = () => {
-  return fetch("https://wedev-api.sky.pro/api/v1/diana-semenova/comments", {
+export const fetchGet = (token) => {
+  return fetch(host, {
     method: "GET",
-  }).
-    then((response) => {
+    headers: {
+      Authorization: token,
+  }
+  })
+  .then((response) => {
+    if (response.status === 401) {
+      throw new Error("Нет авторизации");
+    } else  if (response.status === 500) {
+      throw new Error("Сервер сломался");
+    } else {
       return response.json();
-    })
+    }    
+  })
 }
 
 
 
 //отпраляем новые данные   
-export const fetchPost = () => {
-  return fetch("https://wedev-api.sky.pro/api/v1/diana-semenova/comments", {
+export const fetchPost = (token) => {
+  return fetch(host, {
     method: "POST",
     body: JSON.stringify({
       name: inputNameElement.value
@@ -36,6 +45,9 @@ export const fetchPost = () => {
       likes: 0,
       propertyColorLike: 'like-button no-active-like',
       forceError: true,
+      headers: {
+        Authorization: token,
+    }
     })
   })
     .then((response) => {
@@ -48,4 +60,17 @@ export const fetchPost = () => {
       }
     })
 
+}
+
+//удаляем
+export function fetchDelete(token,id) {
+  return fetch(host + id, {
+      method: "DELETE",
+      headers: {
+        Authorization: token,
+      },
+    })
+      .then((response) => {
+        return response.json();
+      })
 }
