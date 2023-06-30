@@ -25,9 +25,7 @@ const renderApp = (comments, listComments, token) => {
 
   const commentsHtml = comments.map((comment, index) => listComments(comment, index)).join("");
 
-
   const appHTML = `<div class="container">
-
 
   <ul class="comments">
    ${commentsHtml}
@@ -44,9 +42,6 @@ const renderApp = (comments, listComments, token) => {
   </div>
   <div class="comment-loading">Комментарий добавляется...</div>
 </div>`;
-
-
-
 
 
   appEl.innerHTML = appHTML;
