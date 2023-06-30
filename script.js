@@ -5,7 +5,8 @@ import { getCurrentDate } from "./date.js";
 // // то имя функции мы не берем в фигурные скобки
 import renderApp from "./render.js";
 import { fetchGet } from "./api.js";
-import {getListComments} from "./listComments.js"
+import { getListComments } from "./listComments.js";
+//import { commentsLoading } from "./render.js";
 
 // const commentsLoading = document.querySelector('.data-loading');
 // const formCommentElement = document.querySelector('.add-form');
@@ -23,7 +24,7 @@ import {getListComments} from "./listComments.js"
 
 let comments = [];
 let token = "Bearer asb4c4boc86gasb4c4boc86g37w3cc3bo3b83k4g37k3bk3cg3c03ck4k";
-//token = null;
+token = null;
 
 
 export function getAPI() {
@@ -41,11 +42,11 @@ export function getAPI() {
         }
       });
       comments = appComments;
-      return  renderApp(comments, getListComments,token);
+      return  renderApp(comments, getListComments, token);
     })
-    .then((response) => {
-      commentsLoading.style.display = 'none';
-    })
+    // .then((response) => {
+    //   commentsLoading.style.display = 'none';
+    // })
     .catch((error) => {
 
       if (error.message === "Сервер сломался") {
@@ -157,7 +158,7 @@ getAPI();
 // };
 
 // replyToComment();
-renderApp(comments, getListComments,token);
+renderApp(comments, getListComments, token);
 
 // //доп.задание1  кнопка «Написать» не кликабельна, если имя или текст в форме незаполненные.
 // buttonElement.setAttribute('disabled', true);
