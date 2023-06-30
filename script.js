@@ -49,5 +49,3 @@ export function getAPI() {
 };
 
 getAPI();
-
-renderApp(comments, getListComments, token);

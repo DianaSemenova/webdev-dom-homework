@@ -1,4 +1,4 @@
-import { loginUser } from "../api.js"
+import { loginUser,registernUser } from "../api.js"
 
 
 export const rederLoginComponent = ({comments,appEl, setToken, getAPI}) => {
@@ -37,9 +37,9 @@ let isLoginMode = true;
       appEl.innerHTML = appHTML;
     
      
-    const renderForm = () => {
-      document.getElementById('login-link').addEventListener('click', () => {
     
+      document.getElementById('login-link').addEventListener('click', () => {
+        const renderForm = () => {
         const appHTML = 
       `<div class="container">
          <div class="form-add-login">
@@ -65,7 +65,7 @@ let isLoginMode = true;
 
        document.getElementById('login-button').addEventListener('click', () => {
 
-         if (!isLoginMode) {
+         if (isLoginMode) {
           const login = document.getElementById('login-input').value;
           const password = document.getElementById('password-input').value;
 
@@ -144,13 +144,15 @@ let isLoginMode = true;
             }
         });
          
-         }
+      }
         
        //renderApp(comments, listComments, token);
        });
+      }
+      renderForm();
   
       });
-    }
+    
    renderForm();
 }
 
