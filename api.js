@@ -74,8 +74,7 @@ export function fetchDelete(token,id) {
       })
 }
 
-//https://github.com/GlebkaF/webdev-hw-api/blob/main/pages/api/user/README.md
-//отпраляем новые данные   
+//https://github.com/GlebkaF/webdev-hw-api/blob/main/pages/api/user/README.md   
 export const loginUser = ({login, password}) => {
   return fetch("https://wedev-api.sky.pro/api/user/login", {
     method: "POST",
@@ -89,6 +88,28 @@ export const loginUser = ({login, password}) => {
         throw new Error("Сервер сломался");
       } else if (response.status === 400) {
         throw new Error("Нет авторизации");
+      } else {
+        return response.json();
+      }
+    })
+
+}
+
+
+export const registernUser = ({login, password,name}) => {
+  return fetch("https://wedev-api.sky.pro/api/user", {
+    method: "POST",
+    body: JSON.stringify({
+     login,
+     password,
+     name,
+    })
+  })
+    .then((response) => {
+      if (response.status === 500) {
+        throw new Error("Сервер сломался");
+      } else if (response.status === 400) {
+        throw new Error("Такой пользователь уже существует");
       } else {
         return response.json();
       }

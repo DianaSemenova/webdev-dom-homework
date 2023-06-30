@@ -1,5 +1,6 @@
 import { loginUser } from "../api.js"
 
+
 export const rederLoginComponent = ({comments,appEl, setToken, getAPI}) => {
 
 let isLoginMode = true;
@@ -85,6 +86,7 @@ let isLoginMode = true;
         .then ((user) => {
           console.log(user);
           setToken(`Bearer ${user.user.token}`);
+          //renderApp(comments, getListComments, token);
           getAPI();
         })
         .catch((error) => {
@@ -100,7 +102,48 @@ let isLoginMode = true;
             }
         });
          } else {
-          alert ("Заглушка регистрации");
+          const name = document.getElementById('name-input').value;
+          const login = document.getElementById('login-input').value;
+          const password = document.getElementById('password-input').value;
+
+          if (!name) {
+            alert('Введите им');
+            return;
+        }
+          if (!login) {
+              alert('Введите логин');
+              return;
+          }
+          if (!password) {
+              alert('Введите пароль');
+              return;
+          }
+      
+       
+          registernUser({
+          login: login,
+          password: password,
+          name: name,
+        })
+        .then ((user) => {
+          console.log(user);
+          setToken(`Bearer ${user.user.token}`);
+          //renderApp(comments, getListComments, token);
+          getAPI();
+        })
+        .catch((error) => {
+
+          if (error.message === "Сервер сломался") {
+            alert("Сервер сломался, попробуйте позже");
+            getAPI();
+          } else if (error.message === "Нет авторизации") {          
+              alert(error.message);
+            } else {
+              alert('Кажется, у вас сломался интернет, попробуйте позже');
+              console.log(error);
+            }
+        });
+         
          }
         
        //renderApp(comments, listComments, token);
