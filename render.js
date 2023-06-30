@@ -1,5 +1,6 @@
 import { fetchPost, fetchDelete } from "./api.js";
 import { getAPI } from "./script.js";
+import { rederLoginComponent } from "./components/login-component.js"
 //import { getListCommentsNoEdit } from "./listComments.js";
 
 
@@ -13,59 +14,13 @@ const renderApp = (comments, listComments, token) => {
 
 
   if (!token) {
-    const appHTML = comments.map((comment, index) => {
-  
-      return ` <div class="container">
-      <ul class="comments">
-      <li class="comment" data-index="${index}">
-        <div class="comment-header" data-index="${index}">
-          <div>${comment.name}
-          </div>
-          <div>${comment.dateСreation}</div>
-        </div>
-        <div class="comment-body">
-          <div data-index="${index}" class="comment-text" >
-            ${comment.text}
-          </div>
-        </div>
-        <div class="comment-footer">
-          <div class="editor">
-          </div>
-          <div class="likes">
-            <span class="likes-counter"> ${comment.likesNumber}</span>
-            <button data-index="${index}" class='${comment.propertyColorLike}'></button>
-          </div>
-        </div>
-      </li>
-     </ul>
-    <div>Чтобы добавить комментарий, <a  id="login-link" class="form-link" href="#">авторизуйтесь</a></div>
-    </div>`;
-    }).join("");
-
-    appEl.innerHTML = appHTML;
-
-    const authorization = document.getElementById('login-link');
-    authorization.addEventListener('click', () => {
-
-        const appHTML = 
-      `<div class="container">
-         <div class="form-add-login">
-     <h3 class="form-title">Форма входа</h3>
-     <div class="form-row">
-        <input type="text" id="name-input" class="input" placeholder="Введите ваше имя" />
-         <input type="text" id="login-input" class="input" placeholder="Введите логин"/>        
-         <input type="text" id="password-input" class="input" placeholder="Введите пароль"/>
-     </div>
-     
-     <button class="button" id="login-button">Войти</button>
-     <a  class="register-link" href="#">Зарегистрироваться</a>  
-     </div>
-       </div>`;
-  
-       appEl.innerHTML = appHTML;
-  
-      });  
-
+    rederLoginComponent({
+      comments,
+      appEl,
+    setToken: (newToken) => {
+      token = newToken;
+    },
+    getAPI});
   } else { 
 
   const commentsHtml = comments.map((comment, index) => listComments(comment, index)).join("");
@@ -79,7 +34,6 @@ const renderApp = (comments, listComments, token) => {
   </ul>
 
   <div class="data-loading">Пожалуйста подождите, комментарии загружаются...</div>
-  <div>Чтобы добавить комментарий, <a id="login-link" class="authorization-link" href="#">авторизуйтесь</a></div>
   <div class="add-form">
     <input type="text" class="add-form-name" placeholder="Введите ваше имя" />
     <textarea type="textarea" class="add-form-text" placeholder="Введите ваш коментарий" rows="4"></textarea>
