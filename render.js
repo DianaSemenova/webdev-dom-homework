@@ -58,7 +58,6 @@ const renderApp = (comments, listComments, token) => {
      </div>
      
      <button class="button" id="login-button">Войти</button>
-     <br />
      <a  class="register-link" href="#">Зарегистрироваться</a>  
      </div>
        </div>`;
@@ -73,23 +72,6 @@ const renderApp = (comments, listComments, token) => {
 
 
   const appHTML = `<div class="container">
-
-  <div class="form-add-login">
-    <h3 class="form-title">Форма входа</h3>
-    <div class="form-row">
-        Имя
-      <input type="text" id="name-input" class="input" placeholder="Введите ваше имя" />
-      <br />
-        Логин
-        <input type="text" id="login-input" class="input" placeholder="Введите логин"/>
-        <br />
-        Пароль
-        <input type="text" id="password-input" class="input" placeholder="Введите пароль"/>
-    </div>
-    <br />
-    <button class="button" id="login-button">Войти</button>
-    </div>
-
 
 
   <ul class="comments">
