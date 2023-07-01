@@ -10,9 +10,6 @@ const renderApp = (comments, listComments, token) => {
 
   const appEl = document.getElementById('app');
 
-  //const commentsNoEditHtml = comments.map((comment, index) => getListCommentsNoEdit(comment, index)).join("");
-
-
   if (!token) {
     rederLoginComponent({
       comments,
@@ -31,7 +28,7 @@ const renderApp = (comments, listComments, token) => {
    ${commentsHtml}
   </ul>
 
-  <div class="data-loading">Пожалуйста подождите, комментарии загружаются...</div>
+  
   <div class="add-form">
     <input type="text" class="add-form-name" placeholder="Введите ваше имя" />
     <textarea type="textarea" class="add-form-text" placeholder="Введите ваш коментарий" rows="4"></textarea>
@@ -46,7 +43,6 @@ const renderApp = (comments, listComments, token) => {
 
   appEl.innerHTML = appHTML;
 
-  const commentsLoading = document.querySelector('.data-loading');
   const formCommentElement = document.querySelector('.add-form');
   const inputNameElement = document.querySelector('.add-form-name');
   const inputTextElement = document.querySelector('.add-form-text');

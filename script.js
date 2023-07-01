@@ -6,7 +6,7 @@ import { getCurrentDate } from "./date.js";
 import renderApp from "./render.js";
 import { fetchGet } from "./api.js";
 import { getListComments } from "./listComments.js";
-//import { commentsLoading } from "./render.js";
+const commentsLoading = document.querySelector('.data-loading');
 
 
 let comments = [];
@@ -31,9 +31,9 @@ export function getAPI() {
       comments = appComments;
       return  renderApp(comments, getListComments, token);
     })
-    // .then((response) => {
-    //   commentsLoading.style.display = 'none';
-    // })
+    .then((response) => {
+      commentsLoading.style.display = 'none';
+    })
     .catch((error) => {
 
       if (error.message === "Сервер сломался") {

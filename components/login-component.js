@@ -1,7 +1,7 @@
-import { loginUser,registernUser } from "../api.js"
+import { loginUser, registernUser } from "../api.js"
 
 
-export const rederLoginComponent = ({comments,appEl, setToken, getAPI}) => {
+export const rederLoginComponent = ({comments, appEl, setToken, getAPI}) => {
 
 let isLoginMode = true;
 
@@ -86,7 +86,6 @@ let isLoginMode = true;
         .then ((user) => {
           console.log(user);
           setToken(`Bearer ${user.user.token}`);
-          //renderApp(comments, getListComments, token);
           getAPI();
         })
         .catch((error) => {
@@ -128,6 +127,7 @@ let isLoginMode = true;
         .then ((user) => {
           console.log(user);
           setToken(`Bearer ${user.user.token}`);
+          
           //renderApp(comments, getListComments, token);
           getAPI();
         })
@@ -145,14 +145,10 @@ let isLoginMode = true;
         });
          
       }
-        
-       //renderApp(comments, listComments, token);
        });
       }
       renderForm();
   
       });
-    
-   renderForm();
 }
 
