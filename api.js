@@ -5,7 +5,6 @@ const host = "https://wedev-api.sky.pro/api/v2/diana-semenova/comments/";
 export const fetchGet = () => {
   return fetch(host, {
     method: "GET",
-    
   })
   .then((response) => {
     if (response.status === 401) {
@@ -25,11 +24,7 @@ export const fetchPost = (token,inputTextElement,inputNameElement) => {
   return fetch(host, {
     method: "POST",
     body: JSON.stringify({
-      name: inputNameElement.value
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;"),
+      name: inputNameElement.value,
       date: getCurrentDate(new Date()),
       text: inputTextElement.value
         .replaceAll("&", "&amp;")

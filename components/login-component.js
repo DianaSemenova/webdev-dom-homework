@@ -1,7 +1,7 @@
 import { loginUser, registernUser } from "../api.js"
 
 
-export const rederLoginComponent = ({comments, appEl, setToken, getAPI}) => {
+export const rederLoginComponent = ({comments, appEl, setToken, setName, getAPI}) => {
 
 let isLoginMode = true;
 
@@ -89,8 +89,11 @@ let isLoginMode = true;
         .then ((user) => {
           console.log(user);
           setToken(`Bearer ${user.user.token}`);
+          setName(user.user.name);
+          console.log(`Bearer ${user.user.token}`);
+          console.log(user.user.name);
           getAPI();
-        })
+        })       
         .catch((error) => {
 
           if (error.message === "Сервер сломался") {
