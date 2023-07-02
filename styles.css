@@ -17,6 +17,7 @@ body {
     margin: 0;
   }
 
+  .data-loading,
   .container {
     font-family: Helvetica;
     color: #ffffff;

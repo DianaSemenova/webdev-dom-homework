@@ -1,87 +1,40 @@
-import { fetchPost, fetchDelete } from "./api.js";
+import { fetchPost, fetchDelete, toggleLike } from "./api.js";
 import { getAPI } from "./script.js";
-//import { getListCommentsNoEdit } from "./listComments.js";
+import { rederLoginComponent } from "./components/login-component.js"
+import { getListComments } from "./listComments.js";
 
+let token = null;
+let name = null;
 
-
-const renderApp = (comments, listComments, token) => {
+const renderApp = (comments, listComments) => {
 
 
   const appEl = document.getElementById('app');
 
-  //const commentsNoEditHtml = comments.map((comment, index) => getListCommentsNoEdit(comment, index)).join("");
-
-
   if (!token) {
-    const appHTML = comments.map((comment, index) => {
-  
-      return ` <div class="container">
-      <ul class="comments">
-      <li class="comment" data-index="${index}">
-        <div class="comment-header" data-index="${index}">
-          <div>${comment.name}
-          </div>
-          <div>${comment.dateСreation}</div>
-        </div>
-        <div class="comment-body">
-          <div data-index="${index}" class="comment-text" >
-            ${comment.text}
-          </div>
-        </div>
-        <div class="comment-footer">
-          <div class="editor">
-          </div>
-          <div class="likes">
-            <span class="likes-counter"> ${comment.likesNumber}</span>
-            <button data-index="${index}" class='${comment.propertyColorLike}'></button>
-          </div>
-        </div>
-      </li>
-     </ul>
-    <div>Чтобы добавить комментарий, <a  id="login-link" class="form-link" href="#">авторизуйтесь</a></div>
-    </div>`;
-    }).join("");
-
-    appEl.innerHTML = appHTML;
-
-    const authorization = document.getElementById('login-link');
-    authorization.addEventListener('click', () => {
-
-        const appHTML = 
-      `<div class="container">
-         <div class="form-add-login">
-     <h3 class="form-title">Форма входа</h3>
-     <div class="form-row">
-        <input type="text" id="name-input" class="input" placeholder="Введите ваше имя" />
-         <input type="text" id="login-input" class="input" placeholder="Введите логин"/>        
-         <input type="text" id="password-input" class="input" placeholder="Введите пароль"/>
-     </div>
-     
-     <button class="button" id="login-button">Войти</button>
-     <a  class="register-link" href="#">Зарегистрироваться</a>  
-     </div>
-       </div>`;
-  
-       appEl.innerHTML = appHTML;
-  
-      });  
-
+    rederLoginComponent({
+      comments,
+      appEl,
+    setToken: (newToken) => {
+      token = newToken;
+    },
+    setName: (newName) => {
+      name = newName; 
+    },
+    getAPI});
   } else { 
 
   const commentsHtml = comments.map((comment, index) => listComments(comment, index)).join("");
 
-
   const appHTML = `<div class="container">
-
 
   <ul class="comments">
    ${commentsHtml}
   </ul>
 
-  <div class="data-loading">Пожалуйста подождите, комментарии загружаются...</div>
-  <div>Чтобы добавить комментарий, <a id="login-link" class="authorization-link" href="#">авторизуйтесь</a></div>
+  
   <div class="add-form">
-    <input type="text" class="add-form-name" placeholder="Введите ваше имя" />
+    <input type="text" class="add-form-name" value = "${name}" />
     <textarea type="textarea" class="add-form-text" placeholder="Введите ваш коментарий" rows="4"></textarea>
     <div class="add-form-row">
       <button class="add-form-button">Написать</button>
@@ -92,16 +45,13 @@ const renderApp = (comments, listComments, token) => {
 </div>`;
 
 
-
-
-
   appEl.innerHTML = appHTML;
 
-  const commentsLoading = document.querySelector('.data-loading');
   const formCommentElement = document.querySelector('.add-form');
   const inputNameElement = document.querySelector('.add-form-name');
   const inputTextElement = document.querySelector('.add-form-text');
-  const buttonElement = document.querySelector('.add-form-button'); const commentsElement = document.querySelector('.comments');
+  const buttonElement = document.querySelector('.add-form-button'); 
+  const commentsElement = document.querySelector('.comments');
   const buttonElementDel = document.querySelector('.delete-form-button');
   const commentLoadingElement = document.querySelector('.comment-loading');
   const currentDate = new Date().toLocaleDateString('default', { day: '2-digit', month: '2-digit', year: '2-digit' }) +
@@ -111,7 +61,10 @@ const renderApp = (comments, listComments, token) => {
   //редактирование текста уже написанного комментария 
   function editorComment() {
     const editorButtonElements = document.querySelectorAll('.editor-button');
-    const commentsBodyElements = document.querySelectorAll('.comment-body');//+ 
+    const commentsBodyElements = document.querySelectorAll('.comment-body');
+    
+    
+    inputNameElement.setAttribute('disabled', true);
 
 
 
@@ -133,7 +86,7 @@ const renderApp = (comments, listComments, token) => {
 
           comments[editorButtonIndex].text = editorButtonElement.closest('.comment').querySelector('textarea').value;
           comments[editorButtonIndex].dateСreation = `${currentDate} (изменено)`;
-          renderApp(comments, getListComments, token)
+          renderApp(comments, getListComments)
         }
       }
 
@@ -156,28 +109,35 @@ const renderApp = (comments, listComments, token) => {
 
   //счетчик лайков у каждого комментария
   function getLikeButton() {
+
     const likesButton = document.querySelectorAll('.like-button');
     for (const like of likesButton) {
       like.addEventListener("click", (event) => {
 
         event.stopPropagation();
 
+
         const likeIndex = like.dataset.index;
         const commentsElementLikeIndex = comments[likeIndex];
         like.classList.add('-loading-like');
 
         if (commentsElementLikeIndex.likeComment) {
-          commentsElementLikeIndex.likesNumber -= 1;
+          //commentsElementLikeIndex.likesNumber -= 1;
           commentsElementLikeIndex.likeComment = false;
           commentsElementLikeIndex.propertyColorLike = 'like-button -no-active-like';
         } else {
-          commentsElementLikeIndex.likesNumber += 1;
+          //commentsElementLikeIndex.likesNumber += 1;
           commentsElementLikeIndex.likeComment = true;
           commentsElementLikeIndex.propertyColorLike = 'like-button -active-like';
         }
 
+
+        const id = like.dataset.id;
+
+        toggleLike({id, token});        
+
         delay(2000).then(() => {
-          renderApp(comments, getListComments, token)
+          getAPI();
         })
 
       })
@@ -209,7 +169,6 @@ const renderApp = (comments, listComments, token) => {
   const deleteComment = () => {
 
     const deleteButtons = document.querySelectorAll(".delete-button");
-    console.log(deleteButtons);
 
     for (const deleteButton of deleteButtons) {
       deleteButton.addEventListener("click", (event) => {
@@ -223,7 +182,6 @@ const renderApp = (comments, listComments, token) => {
             return getAPI();
           });
 
-        // renderApp(comments, getListComments, token)
       });
     }
   };
@@ -234,21 +192,12 @@ const renderApp = (comments, listComments, token) => {
   //доп.задание1  кнопка «Написать» не кликабельна, если имя или текст в форме незаполненные.
   buttonElement.setAttribute('disabled', true);
 
-  inputNameElement.addEventListener("input", () => {
-
-    buttonElement.setAttribute('disabled', true);
-
-    if ((inputNameElement.value.length > 0) && (inputTextElement.value.length > 0)) {
-
-      buttonElement.removeAttribute('disabled');
-    }
-  });
 
   inputTextElement.addEventListener("input", () => {
 
     buttonElement.setAttribute('disabled', true);
 
-    if ((inputNameElement.value.length > 0) && (inputTextElement.value.length > 0)) {
+    if (inputTextElement.value.length > 0) {
 
       buttonElement.removeAttribute('disabled');
     }
@@ -320,7 +269,7 @@ const renderApp = (comments, listComments, token) => {
   buttonElementDel.addEventListener("click", () => {
 
     comments.pop();
-    renderApp(comments, getListComments, token)
+    renderApp(comments, getListComments)
     // const lastElement = commentsElement.lastElementChild;
     // lastElement.remove();
     });
