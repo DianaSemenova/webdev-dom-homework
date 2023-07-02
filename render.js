@@ -1,11 +1,11 @@
 import { fetchPost, fetchDelete } from "./api.js";
 import { getAPI } from "./script.js";
 import { rederLoginComponent } from "./components/login-component.js"
-//import { getListCommentsNoEdit } from "./listComments.js";
+import { getListComments } from "./listComments.js";
 
+let token = null;
 
-
-const renderApp = (comments, listComments, token) => {
+const renderApp = (comments, listComments) => {
 
 
   const appEl = document.getElementById('app');
@@ -78,7 +78,7 @@ const renderApp = (comments, listComments, token) => {
 
           comments[editorButtonIndex].text = editorButtonElement.closest('.comment').querySelector('textarea').value;
           comments[editorButtonIndex].dateСreation = `${currentDate} (изменено)`;
-          renderApp(comments, getListComments, token)
+          renderApp(comments, getListComments)
         }
       }
 
@@ -122,7 +122,7 @@ const renderApp = (comments, listComments, token) => {
         }
 
         delay(2000).then(() => {
-          renderApp(comments, getListComments, token)
+          renderApp(comments, getListComments)
         })
 
       })
@@ -265,7 +265,7 @@ const renderApp = (comments, listComments, token) => {
   buttonElementDel.addEventListener("click", () => {
 
     comments.pop();
-    renderApp(comments, getListComments, token)
+    renderApp(comments, getListComments)
     // const lastElement = commentsElement.lastElementChild;
     // lastElement.remove();
     });

@@ -11,7 +11,7 @@ const commentsLoading = document.querySelector('.data-loading');
 
 let comments = [];
 //let token = "Bearer asb4c4boc86gasb4c4boc86g37w3cc3bo3b83k4g37k3bk3cg3c03ck4k";
-let token = null;
+
 
 
 export function getAPI() {
@@ -29,7 +29,7 @@ export function getAPI() {
         }
       });
       comments = appComments;
-      return  renderApp(comments, getListComments, token);
+      return  renderApp(comments, getListComments);
     })
     .then((response) => {
       commentsLoading.style.display = 'none';
