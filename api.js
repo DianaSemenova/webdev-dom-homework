@@ -5,9 +5,7 @@ const host = "https://wedev-api.sky.pro/api/v2/diana-semenova/comments/";
 export const fetchGet = (token) => {
   return fetch(host, {
     method: "GET",
-    headers: {
-      Authorization: token,
-  }
+    
   })
   .then((response) => {
     if (response.status === 401) {

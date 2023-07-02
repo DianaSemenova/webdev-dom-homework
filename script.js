@@ -10,12 +10,12 @@ const commentsLoading = document.querySelector('.data-loading');
 
 
 let comments = [];
-let token = "Bearer asb4c4boc86gasb4c4boc86g37w3cc3bo3b83k4g37k3bk3cg3c03ck4k";
-token = null;
+//let token = "Bearer asb4c4boc86gasb4c4boc86g37w3cc3bo3b83k4g37k3bk3cg3c03ck4k";
+let token = null;
 
 
 export function getAPI() {
-  return fetchGet(token)
+  return fetchGet()
     .then((responseData) => {
       const appComments = responseData.comments.map((comment) => {
         return {

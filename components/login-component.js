@@ -5,11 +5,9 @@ export const rederLoginComponent = ({comments, appEl, setToken, getAPI}) => {
 
 let isLoginMode = true;
 
-    const appHTML = comments.map((comment, index) => {
+    const commentsHtmlNotEdit = comments.map((comment, index) => {
   
-        return ` <div class="container">
-        <ul class="comments">
-        <li class="comment" data-index="${index}">
+        return `<li class="comment" data-index="${index}">
           <div class="comment-header" data-index="${index}">
             <div>${comment.name}
             </div>
@@ -28,11 +26,16 @@ let isLoginMode = true;
               <button data-index="${index}" class='${comment.propertyColorLike}'></button>
             </div>
           </div>
-        </li>
-       </ul>
-      <div>Чтобы добавить комментарий, <a  id="login-link" class="form-link" href="#">авторизуйтесь</a></div>
-      </div>`;
+        </li>`;
       }).join("");
+
+      const appHTML = `<div class="container">
+
+      <ul class="comments">
+       ${commentsHtmlNotEdit}
+      </ul>    
+      <div>Чтобы добавить комментарий, <a  id="login-link" class="form-link" href="#">авторизуйтесь</a></div>
+    </div>`;
     
       appEl.innerHTML = appHTML;
     
