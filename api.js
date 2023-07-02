@@ -2,7 +2,7 @@ import { getCurrentDate } from "./date.js";
 
 const host = "https://wedev-api.sky.pro/api/v2/diana-semenova/comments/";
 
-export const fetchGet = (token) => {
+export const fetchGet = () => {
   return fetch(host, {
     method: "GET",
     
@@ -113,4 +113,17 @@ export const registernUser = ({login, password,name}) => {
       }
     })
 
+}
+
+
+//лайки
+export const toggleLike = ({id, token}) => {
+  return fetch(`https://wedev-api.sky.pro/api/v2/diana-semenova/comments/${id}/toggle-like`, {
+    method: "POST",
+    headers: {
+      Authorization: token,
+    },
+  }).then((response) => {
+    return response.json();
+  });
 }

@@ -12,12 +12,12 @@ const getListComments = (comment, index) => {
           </div>
           <div class="comment-footer">
             <div class="editor">
-            <button data-index="${index}" class='editor-button'>Редактировать</button>
+            <button data-index="${index}"class='editor-button'>Редактировать</button>
             <button data-id="${comment.id}" class='delete-button'>Удалить</button>
             </div>
             <div class="likes">
               <span class="likes-counter"> ${comment.likesNumber}</span>
-              <button data-index="${index}" class='${comment.propertyColorLike}'></button>
+              <button data-index="${index}" data-id="${comment.id}" class='${comment.propertyColorLike}'></button>
             </div>
           </div>
         </li>`;
