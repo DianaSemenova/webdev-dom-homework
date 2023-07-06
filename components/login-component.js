@@ -1,4 +1,5 @@
-import { loginUser, registernUser } from "../api.js"
+import { loginUser, registernUser } from "../api.js";
+import _ from 'lodash';
 
 
 export const rederLoginComponent = ({comments, appEl, setToken, setName, getAPI}) => {
@@ -128,7 +129,7 @@ let isLoginMode = true;
           registernUser({
           login: login,
           password: password,
-          name: name,
+          name:_.capitalize(name),
         })
         .then ((user) => {
           console.log(user);
